@@ -4,6 +4,7 @@ from os import environ
 API_KEY = environ['TS_API_KEY']
 URL = 'http://localhost:10080/'
 IDLE_MIN = 30
+IGNORED_CHANNELS = ['22', '23', '39', '40']
 
 
 def get_client_list(session):
@@ -22,8 +23,7 @@ def get_client_list(session):
 
 def move_clients(session, clients):
     for c in clients:
-        # cid=22 -> poke, cid=23 -> afk
-        if c['cid'] != '22' and c['cid'] != '23' and c['client_type'] != '1' and \
+        if c['cid'] not in IGNORED_CHANNELS and c['client_type'] != '1' and \
                 int(c['client_idle_time']) >= IDLE_MIN * 60000:
             headers = {'X-Api-Key': API_KEY}
             params = {'clid': c['clid'], 'cid': '23'}
